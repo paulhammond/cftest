@@ -1,0 +1,29 @@
+{
+    "name": "index",
+    "event": {
+        "request": {
+            "method": "GET",
+            "uri": "/",
+            "querystring": {},
+            "headers": {
+                "host": {
+                    "value": "www.example.com"
+                }
+            },
+            "cookies": {}
+        }
+    },
+    "output": {
+        "request": {
+            "method": "GET",
+            "uri": "/",
+            "querystring": {},
+            "headers": {
+                "host": {
+                    "value": "www.example.com"
+                }
+            },
+            "cookies": {}
+        }
+    }
+}

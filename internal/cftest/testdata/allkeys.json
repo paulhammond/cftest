@@ -1,0 +1,52 @@
+{
+    "name": "with all keys",
+    "event": {
+        "version": "1.0",
+        "context": {
+            "eventType": "viewer-response"
+        },
+        "viewer": {
+            "ip": "1.1.1.1"
+        },
+        "request": {
+            "method": "GET",
+            "uri": "/",
+            "querystring": {},
+            "headers": {
+                "host": {
+                    "value": "www.example.com"
+                }
+            },
+            "cookies": {}
+        },
+        "response": {
+            "statusCode": 200,
+            "statusDescription": "OK",
+            "headers": {
+                "date": {
+                    "value": "Thu, 08 Jul 2021 18:55:00 GMT"
+                },
+                "content-type": {
+                    "value": "text/plain"
+                },
+                "content-length": {
+                    "value": "100"
+                }
+            },
+            "cookies": {}
+        }
+    },
+    "output": {
+        "request": {
+            "method": "GET",
+            "uri": "/",
+            "querystring": {},
+            "headers": {
+                "host": {
+                    "value": "www.example.com"
+                }
+            },
+            "cookies": {}
+        }
+    }
+}
