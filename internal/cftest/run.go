@@ -49,6 +49,9 @@ func RunTest(runner Runner, test Test) (Result, error) {
 			return result, fmt.Errorf("JSON decode error: %w", err)
 		}
 	}
+	if t, ok := output.(map[string]interface{}); ok && len(t) == 0 {
+		output = nil
+	}
 
 	if diff := pretty.Compare(output, test.Output); diff != "" {
 		failures = append(failures, fmt.Sprintf("Output (-got +want):\n%s", diff))

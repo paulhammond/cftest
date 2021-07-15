@@ -77,6 +77,20 @@ func TestRunTest(t *testing.T) {
 			},
 		},
 		{
+			name:     "expected test error with empty output",
+			testfile: "testdata/error.json",
+			runner: testRunner{result: &cloudfront.TestResult{
+				ComputeUtilization:   aws.String("23"),
+				FunctionErrorMessage: aws.String("thrown error"),
+				FunctionOutput:       aws.String("{}"),
+			}},
+			exp: Result{
+				Utilization: 23,
+				Failure:     "",
+				OK:          true,
+			},
+		},
+		{
 			name:     "output different",
 			testfile: "testdata/index.json",
 			runner: testRunner{result: &cloudfront.TestResult{
