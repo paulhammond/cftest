@@ -12,7 +12,6 @@ func TestReadTests(t *testing.T) {
 	expected := []Test{
 		{
 			Filename: "testdata/error.json",
-			Name:     "index",
 			Event: testEvent{
 				Version: "1.0",
 				Context: hash{
@@ -37,7 +36,6 @@ func TestReadTests(t *testing.T) {
 		},
 		{
 			Filename: "testdata/allkeys.json",
-			Name:     "with all keys",
 			Event: testEvent{
 				Version: "1.0",
 				Context: hash{

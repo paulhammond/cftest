@@ -41,12 +41,12 @@ func main() {
 		r, err := cftest.RunTest(runner, t)
 
 		if err != nil {
-			fmt.Printf("ERROR: %s: %s\n%s\n", t.Filename, t.Name, err)
+			fmt.Printf("ERROR: %s\n%s\n", t.Filename, err)
 		}
 		if r.OK {
-			fmt.Printf("OK:    %s: %s (%d)\n", t.Filename, t.Name, r.Utilization)
+			fmt.Printf("OK:    %s (%d)\n", t.Filename, r.Utilization)
 		} else {
-			fmt.Printf("FAIL:  %s: %s (%d)\n%s\n", t.Filename, t.Name, r.Utilization, r.Failure)
+			fmt.Printf("FAIL:  %s (%d)\n%s\n", t.Filename, r.Utilization, r.Failure)
 		}
 
 	}

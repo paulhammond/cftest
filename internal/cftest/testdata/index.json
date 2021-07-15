@@ -1,5 +1,4 @@
 {
-    "name": "index",
     "event": {
         "request": {
             "method": "GET",

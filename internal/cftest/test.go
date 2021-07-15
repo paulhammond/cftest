@@ -7,7 +7,6 @@ import (
 
 type Test struct {
 	Filename string      `json:"-"`
-	Name     string      `json:"name"`
 	Event    testEvent   `json:"event"`
 	Output   interface{} `json:"output"`
 	Error    string      `json:"error"`
