@@ -2,6 +2,7 @@ package cftest
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -32,6 +33,10 @@ func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
 	r, err := c.cf.TestFunction(&input)
 	if err != nil {
 		return nil, err
+	}
+
+	if r.TestResult.FunctionErrorMessage != nil {
+		r.TestResult.FunctionErrorMessage = aws.String(strings.Replace(*r.TestResult.FunctionErrorMessage, "The CloudFront function associated with the CloudFront distribution is invalid or could not run. Error: ", "", 1))
 	}
 
 	return r.TestResult, nil
