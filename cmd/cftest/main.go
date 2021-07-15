@@ -31,6 +31,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Printf("Testing %s:\n", runner.Name())
+
 	tests, err := cftest.ReadTests(args[1:])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)

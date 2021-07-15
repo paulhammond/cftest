@@ -12,8 +12,12 @@ import (
 type cloudFrontRunner struct {
 	cf      *cloudfront.CloudFront
 	ifMatch *string
-	name    *string
-	stage   *string
+	name    string
+	stage   string
+}
+
+func (c cloudFrontRunner) Name() string {
+	return c.name + " " + c.stage
 }
 
 func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
@@ -26,8 +30,8 @@ func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
 	input := cloudfront.TestFunctionInput{
 		EventObject: eventBytes,
 		IfMatch:     c.ifMatch,
-		Name:        c.name,
-		Stage:       c.stage,
+		Name:        &c.name,
+		Stage:       &c.stage,
 	}
 
 	r, err := c.cf.TestFunction(&input)
@@ -59,8 +63,8 @@ func NewCloudFrontRunner(name string, stage string) (Runner, error) {
 	runner := cloudFrontRunner{
 		cf:      cf,
 		ifMatch: r.ETag,
-		name:    &name,
-		stage:   &stage,
+		name:    name,
+		stage:   stage,
 	}
 	return runner, nil
 }

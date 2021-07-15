@@ -41,6 +41,10 @@ func (r testRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
 	return r.result, r.err
 }
 
+func (r testRunner) Name() string {
+	return "testRunner"
+}
+
 func TestRunTest(t *testing.T) {
 
 	tests := []struct {

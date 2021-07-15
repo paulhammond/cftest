@@ -19,6 +19,7 @@ type Result struct {
 
 type Runner interface {
 	Run(e testEvent) (*cloudfront.TestResult, error)
+	Name() string
 }
 
 func RunTest(runner Runner, test Test) (Result, error) {
