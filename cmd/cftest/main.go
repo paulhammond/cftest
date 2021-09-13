@@ -17,9 +17,13 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
+	var help = pflag.BoolP("help", "h", false, "show help")
+	pflag.CommandLine.MarkHidden("help")
+
 	pflag.Parse()
 	args := pflag.Args()
-	if len(args) < 2 {
+
+	if len(args) < 2 || *help {
 		pflag.Usage()
 		os.Exit(2)
 	}
