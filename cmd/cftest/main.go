@@ -11,17 +11,26 @@ import (
 	"github.com/paulhammond/cftest/internal/cftest"
 )
 
+//go:generate go run github.com/paulhammond/licensepack -var licenses .
+var licenses string
+
 func main() {
 	pflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "usage: cftest [function] [test...]\n")
 		pflag.PrintDefaults()
 	}
 
+	var credits = pflag.Bool("credits", false, "show credits")
 	var help = pflag.BoolP("help", "h", false, "show help")
 	pflag.CommandLine.MarkHidden("help")
 
 	pflag.Parse()
 	args := pflag.Args()
+
+	if *credits {
+		fmt.Println(licenses)
+		os.Exit(0)
+	}
 
 	if len(args) < 2 || *help {
 		pflag.Usage()
