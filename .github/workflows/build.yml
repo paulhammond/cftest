@@ -1,0 +1,31 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: ["macos", "linux"]
+        arch: ["arm64", "amd64"]
+      fail-fast: false
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.0'
+      - name: Test
+        run: go test -v ./...
+      - name: Build
+        env:
+          OS: ${{ matrix.os }}
+          ARCH: ${{ matrix.arch }}
+          REF: ${{ github.sha }}
+        run: "./.github/workflows/build.sh"
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: "cftest-${{matrix.os}}-${{matrix.arch}}-${{github.sha}}.tgz"
+          path: "build/cftest-${{matrix.os}}-${{matrix.arch}}-${{github.sha}}.tgz"

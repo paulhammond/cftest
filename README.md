@@ -12,10 +12,10 @@ expected outputs. That's where cftest comes in.
 [Cloudfront functions]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-functions.html
 [testfunction]: https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_TestFunction.html
 
-## Installing
+## Installation
 
-Example build steps are included in the [Dockerfile](Dockerfile). Prebuilt
-binaries and Docker images might be provided in the future.
+Prebuilt binaries can be downloaded from from
+[Github Releases](https://github.com/paulhammond/cftest/releases)
 
 ## Usage
 
