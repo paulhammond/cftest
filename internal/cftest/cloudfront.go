@@ -1,26 +1,28 @@
 package cftest
 
 import (
+	"context"
 	"encoding/json"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/cloudfront"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cloudfront"
+	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 )
 
 type cloudFrontRunner struct {
-	cf      *cloudfront.CloudFront
+	cf      *cloudfront.Client
 	ifMatch *string
 	name    string
-	stage   string
+	stage   types.FunctionStage
 }
 
 func (c cloudFrontRunner) Name() string {
-	return c.name + " " + c.stage
+	return c.name + " " + string(c.stage)
 }
 
-func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
+func (c cloudFrontRunner) Run(ctx context.Context, e testEvent) (*types.TestResult, error) {
 
 	eventBytes, err := json.Marshal(e)
 	if err != nil {
@@ -31,10 +33,10 @@ func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
 		EventObject: eventBytes,
 		IfMatch:     c.ifMatch,
 		Name:        &c.name,
-		Stage:       &c.stage,
+		Stage:       c.stage,
 	}
 
-	r, err := c.cf.TestFunction(&input)
+	r, err := c.cf.TestFunction(ctx, &input)
 	if err != nil {
 		return nil, err
 	}
@@ -46,14 +48,20 @@ func (c cloudFrontRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
 	return r.TestResult, nil
 }
 
-func NewCloudFrontRunner(name string, stage string) (Runner, error) {
+func NewCloudFrontRunner(ctx context.Context, name string, stage string) (Runner, error) {
 
-	s := session.Must(session.NewSession())
-	cf := cloudfront.New(s)
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	r, err := cf.DescribeFunction(&cloudfront.DescribeFunctionInput{
+	functionStage := types.FunctionStage(stage)
+
+	cf := cloudfront.NewFromConfig(cfg)
+
+	r, err := cf.DescribeFunction(ctx, &cloudfront.DescribeFunctionInput{
 		Name:  aws.String(name),
-		Stage: aws.String(stage),
+		Stage: functionStage,
 	})
 
 	if err != nil {
@@ -64,7 +72,7 @@ func NewCloudFrontRunner(name string, stage string) (Runner, error) {
 		cf:      cf,
 		ifMatch: r.ETag,
 		name:    name,
-		stage:   stage,
+		stage:   functionStage,
 	}
 	return runner, nil
 }

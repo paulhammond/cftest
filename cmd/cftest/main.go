@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -27,6 +28,8 @@ func main() {
 	pflag.Parse()
 	args := pflag.Args()
 
+	ctx := context.Background()
+
 	if *credits {
 		fmt.Println(licenses)
 		os.Exit(0)
@@ -37,7 +40,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	runner, err := parseFunc(args[0])
+	runner, err := parseFunc(ctx, args[0])
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
@@ -61,7 +64,7 @@ func main() {
 	fmtPath := fmt.Sprintf("%%-%ds ", maxPathLen)
 
 	for _, t := range tests {
-		r, err := cftest.RunTest(runner, t)
+		r, err := cftest.RunTest(ctx, runner, t)
 		path := fmt.Sprintf(fmtPath, t.Filename)
 		utilization := color.HiBlackString(fmt.Sprintf("(%d%%)", r.Utilization))
 
@@ -92,11 +95,11 @@ func colorDiff(diff string) string {
 	return strings.Join(lines, "\n")
 }
 
-func parseFunc(name string) (cftest.Runner, error) {
+func parseFunc(ctx context.Context, name string) (cftest.Runner, error) {
 	parts := strings.SplitN(name, ":", 2)
 
 	if len(parts) > 1 && (parts[1] == "DEVELOPMENT" || parts[1] == "LIVE") {
-		return cftest.NewCloudFrontRunner(parts[0], parts[1])
+		return cftest.NewCloudFrontRunner(ctx, parts[0], parts[1])
 	}
 
 	return nil, fmt.Errorf("function not found")

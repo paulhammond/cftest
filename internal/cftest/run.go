@@ -1,13 +1,14 @@
 package cftest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cloudfront"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 	"github.com/kylelemons/godebug/pretty"
 )
 
@@ -18,28 +19,28 @@ type Result struct {
 }
 
 type Runner interface {
-	Run(e testEvent) (*cloudfront.TestResult, error)
+	Run(ctx context.Context, e testEvent) (*types.TestResult, error)
 	Name() string
 }
 
-func RunTest(runner Runner, test Test) (Result, error) {
+func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
 
 	result := Result{}
 	failures := []string{}
 
-	testResult, err := runner.Run(test.Event)
+	testResult, err := runner.Run(ctx, test.Event)
 	if err != nil {
 		return result, err
 	}
 
 	if testResult.ComputeUtilization != nil {
-		result.Utilization, err = strconv.Atoi(aws.StringValue(testResult.ComputeUtilization))
+		result.Utilization, err = strconv.Atoi(aws.ToString(testResult.ComputeUtilization))
 		if err != nil {
 			return result, err
 		}
 	}
 
-	if gotError := aws.StringValue(testResult.FunctionErrorMessage); gotError != test.Error {
+	if gotError := aws.ToString(testResult.FunctionErrorMessage); gotError != test.Error {
 		failures = append(failures, fmt.Sprintf("Error (-got +want):\n%s", pretty.Compare(gotError, test.Error)))
 	}
 

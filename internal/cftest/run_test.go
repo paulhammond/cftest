@@ -1,13 +1,14 @@
 package cftest
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"reflect"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cloudfront"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cloudfront/types"
 )
 
 type hash map[string]interface{}
@@ -33,11 +34,11 @@ func makeResult(uri string) string {
 }
 
 type testRunner struct {
-	result *cloudfront.TestResult
+	result *types.TestResult
 	err    error
 }
 
-func (r testRunner) Run(e testEvent) (*cloudfront.TestResult, error) {
+func (r testRunner) Run(ctx context.Context, e testEvent) (*types.TestResult, error) {
 	return r.result, r.err
 }
 
@@ -57,7 +58,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "ok",
 			testfile: "testdata/index.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				ComputeUtilization: aws.String("23"),
 				FunctionOutput:     aws.String(makeResult("/")),
 			}},
@@ -70,7 +71,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "expected test error",
 			testfile: "testdata/error.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				ComputeUtilization:   aws.String("23"),
 				FunctionErrorMessage: aws.String("thrown error"),
 			}},
@@ -83,7 +84,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "expected test error with empty output",
 			testfile: "testdata/error.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				ComputeUtilization:   aws.String("23"),
 				FunctionErrorMessage: aws.String("thrown error"),
 				FunctionOutput:       aws.String("{}"),
@@ -97,7 +98,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "output different",
 			testfile: "testdata/index.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				ComputeUtilization: aws.String("23"),
 				FunctionOutput:     aws.String(makeResult("/nomatch")),
 			}},
@@ -126,7 +127,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "test error different",
 			testfile: "testdata/error.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				ComputeUtilization:   aws.String("23"),
 				FunctionErrorMessage: aws.String("other error"),
 			}},
@@ -147,7 +148,7 @@ func TestRunTest(t *testing.T) {
 		{
 			name:     "json error",
 			testfile: "testdata/index.json",
-			runner: testRunner{result: &cloudfront.TestResult{
+			runner: testRunner{result: &types.TestResult{
 				FunctionOutput: aws.String("/"),
 			}},
 			err: errors.New("JSON decode error: invalid character '/' looking for beginning of value"),
@@ -161,7 +162,7 @@ func TestRunTest(t *testing.T) {
 			panic(err)
 		}
 
-		result, err := RunTest(runner, *test)
+		result, err := RunTest(context.Background(), runner, *test)
 
 		checkErrorEqual(t, tt.name, err, tt.err)
 
