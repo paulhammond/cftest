@@ -55,6 +55,11 @@ func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
 		output = nil
 	}
 
+	bodyDataKey := []string{"response", "body", "data"}
+	if getNestedBool(test.Output, bodyDataKey) {
+		setNestedTrue(output, bodyDataKey)
+	}
+
 	if diff := pretty.Compare(output, test.Output); diff != "" {
 		failures = append(failures, fmt.Sprintf("Output (-got +want):\n%s", diff))
 	}
@@ -66,4 +71,54 @@ func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
 	}
 	return result, nil
 
+}
+
+func getNestedBool(v any, keys []string) bool {
+	if len(keys) == 0 {
+		return false
+	}
+	for _, k := range keys {
+		m, ok := v.(map[string]any)
+		if !ok {
+			return false
+		}
+
+		v, ok = m[k]
+		if !ok {
+			return false
+		}
+	}
+
+	s, ok := v.(bool)
+	if !ok {
+		return false
+	}
+	return s
+}
+
+func setNestedTrue(v any, keys []string) bool {
+	if len(keys) == 0 {
+		return false
+	}
+	for i, k := range keys {
+		m, ok := v.(map[string]any)
+		if !ok {
+			return false
+		}
+
+		v, ok = m[k]
+		if !ok {
+			return false
+		}
+
+		if i == len(keys)-1 {
+			_, ok := v.(string)
+			if !ok {
+				return false
+			}
+			m[k] = true
+			return true
+		}
+	}
+	panic("unreachable")
 }

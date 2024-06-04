@@ -69,7 +69,7 @@ instance roles, ~/.aws files and associated environment variables.
 
 [event]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/functions-event-structure.html
 
-## Error checking
+### Checking errors
 
 Cloudfront functions can return two kinds of errors. The first is a HTTP error
 with a code, such as "404 Not Found". The second is a thrown error. cftest can
@@ -102,6 +102,41 @@ example:
   "error": "My thrown error"
 }
 ```
+
+### Checking response body data
+
+Cloudfront functions can return a response that includes a
+[generated body][body]. The data for these can be large and repetitive, so
+cftest gives you the option of testing for just the existence of body data
+without requiring a full string match.
+
+You can do this by specifying `true` as the value of the `data` attribute. For
+example:
+
+```json
+{
+  "event": {…},
+
+  "output": {
+    "response": {
+      "headers": {},
+      "statusCode": 200,
+      "statusDescription": "OK",
+      "body": {
+        "encoding": "text",
+        "data": true
+      }
+    }
+  }
+}
+```
+
+If your function returns a body as a simple string then the underlying
+[testing APIs][testfunction] used by cftest will convert that string into a full
+object with `encoding` and `data` attributes, so your test file will also need
+to use that longer syntax.
+
+[body]: https://aws.amazon.com/about-aws/whats-new/2023/03/http-status-response-generation-cloudfront-functions/
 
 ## License
 
