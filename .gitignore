@@ -1,1 +1,2 @@
-cmd/cftest/licenses.go
+/cmd/cftest/licenses.go
+/build
