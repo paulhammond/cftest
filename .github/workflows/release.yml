@@ -11,7 +11,7 @@ jobs:
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create --repo ${{ github.repository }} "${GITHUB_REF#refs/tags/}"
+        run: gh release create --repo ${{ github.repository }} "${{github.ref_name}}"
   build:
     name: Build
     needs: create-release
@@ -34,9 +34,9 @@ jobs:
         env:
           OS: ${{ matrix.os }}
           ARCH: ${{ matrix.arch }}
-          REF: ${{ github.sha }}
+          REF: ${{ github.ref_name }}
         run: "./.github/workflows/build.sh"
       - name: Upload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${GITHUB_REF#refs/tags/}" build/cftest-${{matrix.os}}-${{matrix.arch}}-${{github.sha}}.tgz
+        run: gh release upload "${{github.ref_name}}" build/cftest-${{matrix.os}}-${{matrix.arch}}-${{github.ref_name}}.tgz
