@@ -24,7 +24,6 @@ type Runner interface {
 }
 
 func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
-
 	result := Result{}
 	failures := []string{}
 
@@ -44,14 +43,14 @@ func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
 		failures = append(failures, fmt.Sprintf("Error (-got +want):\n%s", pretty.Compare(gotError, test.Error)))
 	}
 
-	var output interface{}
+	var output any
 	if testResult.FunctionOutput != nil {
 		err := json.Unmarshal([]byte(*testResult.FunctionOutput), &output)
 		if err != nil {
 			return result, fmt.Errorf("JSON decode error: %w", err)
 		}
 	}
-	if t, ok := output.(map[string]interface{}); ok && len(t) == 0 {
+	if t, ok := output.(map[string]any); ok && len(t) == 0 {
 		output = nil
 	}
 
@@ -70,7 +69,6 @@ func RunTest(ctx context.Context, runner Runner, test Test) (Result, error) {
 		result.OK = true
 	}
 	return result, nil
-
 }
 
 func getNestedBool(v any, keys []string) bool {

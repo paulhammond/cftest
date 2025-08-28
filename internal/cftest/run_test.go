@@ -12,7 +12,7 @@ import (
 	"github.com/kylelemons/godebug/pretty"
 )
 
-type hash map[string]interface{}
+type hash map[string]any
 
 func makeRequest(uri string) string {
 	b, err := json.Marshal(hash{
@@ -51,7 +51,6 @@ func makeResponse(body hash) string {
 		panic(err)
 	}
 	return string(b)
-
 }
 
 type testRunner struct {
@@ -68,7 +67,6 @@ func (r testRunner) Name() string {
 }
 
 func TestRunTest(t *testing.T) {
-
 	tests := []struct {
 		name     string
 		testfile string
@@ -288,7 +286,6 @@ func TestRunTest(t *testing.T) {
 		}
 
 	}
-
 }
 
 func checkErrorEqual(tb testing.TB, name string, a, b error) {
@@ -368,7 +365,6 @@ func TestGetNestedBool(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			got := getNestedBool(tt.v, tt.keys)
 
@@ -452,7 +448,6 @@ func TestSetNestedTrue(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.v
 			ok := setNestedTrue(got, tt.keys)

@@ -21,8 +21,11 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
-	var credits = pflag.Bool("credits", false, "show credits")
-	var help = pflag.BoolP("help", "h", false, "show help")
+	var (
+		credits = pflag.Bool("credits", false, "show credits")
+		help    = pflag.BoolP("help", "h", false, "show help")
+	)
+
 	pflag.CommandLine.MarkHidden("help")
 
 	pflag.Parse()
@@ -41,7 +44,6 @@ func main() {
 	}
 
 	runner, err := parseFunc(ctx, args[0])
-
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
 		os.Exit(1)

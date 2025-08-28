@@ -6,22 +6,21 @@ import (
 )
 
 type Test struct {
-	Filename string      `json:"-"`
-	Event    testEvent   `json:"event"`
-	Output   interface{} `json:"output"`
-	Error    string      `json:"error"`
+	Filename string    `json:"-"`
+	Event    testEvent `json:"event"`
+	Output   any       `json:"output"`
+	Error    string    `json:"error"`
 }
 
 type testEvent struct {
-	Version  string      `json:"version"`
-	Context  interface{} `json:"context"`
-	Viewer   interface{} `json:"viewer"`
-	Request  interface{} `json:"request,omitempty"`
-	Response interface{} `json:"response,omitempty"`
+	Version  string `json:"version"`
+	Context  any    `json:"context"`
+	Viewer   any    `json:"viewer"`
+	Request  any    `json:"request,omitempty"`
+	Response any    `json:"response,omitempty"`
 }
 
 func ReadTests(files []string) ([]Test, error) {
-
 	tests := []Test{}
 	for _, f := range files {
 		t, err := readTest(f)
@@ -39,14 +38,14 @@ func readTest(path string) (*Test, error) {
 		return nil, err
 	}
 
-	var t = Test{
+	t := Test{
 		Filename: path,
 		Event: testEvent{
 			Version: "1.0",
-			Context: map[string]interface{}{
+			Context: map[string]any{
 				"eventType": "viewer-request",
 			},
-			Viewer: map[string]interface{}{
+			Viewer: map[string]any{
 				"ip": "1.2.3.4",
 			},
 		},

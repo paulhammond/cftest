@@ -23,7 +23,6 @@ func (c cloudFrontRunner) Name() string {
 }
 
 func (c cloudFrontRunner) Run(ctx context.Context, e testEvent) (*types.TestResult, error) {
-
 	eventBytes, err := json.Marshal(e)
 	if err != nil {
 		return nil, err
@@ -49,7 +48,6 @@ func (c cloudFrontRunner) Run(ctx context.Context, e testEvent) (*types.TestResu
 }
 
 func NewCloudFrontRunner(ctx context.Context, name string, stage string) (Runner, error) {
-
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
@@ -63,7 +61,6 @@ func NewCloudFrontRunner(ctx context.Context, name string, stage string) (Runner
 		Name:  aws.String(name),
 		Stage: functionStage,
 	})
-
 	if err != nil {
 		return nil, err
 	}
