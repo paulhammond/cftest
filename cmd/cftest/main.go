@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"os"
 	"strings"
@@ -12,8 +13,9 @@ import (
 	"github.com/paulhammond/cftest/internal/cftest"
 )
 
-//go:generate go run github.com/paulhammond/licensepack -var licenses .
-var licenses string
+//go:generate go tool licensepack -tmpl short -wrap 80 .
+//go:embed credits.txt
+var credits string
 
 func main() {
 	pflag.Usage = func() {
@@ -22,8 +24,8 @@ func main() {
 	}
 
 	var (
-		credits = pflag.Bool("credits", false, "show credits")
-		help    = pflag.BoolP("help", "h", false, "show help")
+		showCredits = pflag.Bool("credits", false, "show credits")
+		help        = pflag.BoolP("help", "h", false, "show help")
 	)
 
 	pflag.CommandLine.MarkHidden("help")
@@ -33,8 +35,8 @@ func main() {
 
 	ctx := context.Background()
 
-	if *credits {
-		fmt.Println(licenses)
+	if *showCredits {
+		fmt.Println(credits)
 		os.Exit(0)
 	}
 
