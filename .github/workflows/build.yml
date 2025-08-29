@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         os: ["macos", "linux"]
@@ -11,11 +11,11 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
-          go-version: '1.22.0'
+          go-version: "1.25.0"
       - name: Test
         run: go test -v ./...
       - name: Build
@@ -25,7 +25,7 @@ jobs:
           REF: ${{ github.sha }}
         run: "./.github/workflows/build.sh"
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: "cftest-${{matrix.os}}-${{matrix.arch}}-${{github.sha}}.tgz"
           path: "build/cftest-${{matrix.os}}-${{matrix.arch}}-${{github.sha}}.tgz"
