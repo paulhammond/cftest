@@ -2,6 +2,8 @@ module github.com/paulhammond/cftest
 
 go 1.25.0
 
+toolchain go1.26.6
+
 require (
 	github.com/aws/aws-sdk-go-v2 v1.38.2
 	github.com/aws/aws-sdk-go-v2/config v1.31.4
