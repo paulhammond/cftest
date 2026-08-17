@@ -48,7 +48,7 @@ func (c cloudFrontRunner) Run(ctx context.Context, e testEvent) (*types.TestResu
 }
 
 func NewCloudFrontRunner(ctx context.Context, name string, stage string) (Runner, error) {
-	cfg, err := config.LoadDefaultConfig(ctx)
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithDefaultRegion("us-east-1"))
 	if err != nil {
 		return nil, err
 	}
